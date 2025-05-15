@@ -112,7 +112,7 @@ def get_scouting_url(before_id=None):
         base += "&offerAutoAccept=true"
     if selected_positions:
         position_param = urllib.parse.quote(",".join(selected_positions))
-        base += f"&positions.name={position_param}"
+        base += f"&positions={position_param}"
     if before_id:
         base += f"&beforePlayerId={before_id}"
     return base
