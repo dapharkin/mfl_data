@@ -80,8 +80,17 @@ min_ovr, max_ovr = ovr_range
 division = st.sidebar.selectbox("Division", list(range(1, 10)), index=7)  # default to 8
 
 
+
 all_positions = ["GK", "RB", "LB", "CB", "RWB", "LWB", "CDM", "CM", "CAM", "RM", "LM", "RW", "LW", "CF", "ST"]
+
+with_auto_accept = st.sidebar.checkbox("Auto Accept", value=False)
+
 selected_positions = st.sidebar.multiselect("Positions", all_positions, default=[])
+
+if st.sidebar.button("🔁 Refresh Results"):
+    st.session_state.scouting_players = []
+    st.session_state.scouting_last_id = None
+    st.rerun()
 
 # --- SESSION STATE ---
 if "scouting_players" not in st.session_state:
@@ -99,6 +108,8 @@ def get_scouting_url(before_id=None):
         f"&ownerLastActivity=lastWeek&ageMin={min_age}&ageMax={max_age}"
         f"&offerDivisionAccepted={division}"
     )
+    if with_auto_accept:
+        base += "&offerAutoAccept=true"
     if selected_positions:
         position_param = urllib.parse.quote(",".join(selected_positions))
         base += f"&positions.name={position_param}"
