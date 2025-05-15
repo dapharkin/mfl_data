@@ -183,7 +183,7 @@ if st.sidebar.button("🔁 Refresh Results"):
 
 if len(st.session_state.listings) == 0:
     last_id = None
-    for _ in range(6):
+    for _ in range(2):
         new_batch = load_listings(before_id=last_id)
         if not new_batch:
             break
