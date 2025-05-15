@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import urllib.parse
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="MFL Scouting Viewer", layout="wide")
