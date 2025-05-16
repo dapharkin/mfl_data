@@ -160,7 +160,7 @@ def get_api_url(before_id=None):
         base += "&isFreeAgent=true"
     if selected_positions:
         position_param = urllib.parse.quote(",".join(selected_positions))
-        base += f"&positions.name={position_param}"
+        base += f"&positions={position_param}"
     if before_id:
         base += f"&beforeListingId={before_id}"
     return base
@@ -201,7 +201,7 @@ if not df.empty:
     df["positions_raw"] = df["player.metadata.positions"]
     df["positions"] = df["positions_raw"].apply(lambda x: ", ".join(x) if isinstance(x, list) else x)
     df["age"] = df["player.metadata.age"]
-    df["club"] = df["player.activeContract.club.name"]
+    df["club"] = df.get("player.activeContract.club.name", pd.Series(["Free Agent"] * len(df)))
     df["MFL"] = df["player_id"].apply(lambda x: f"https://app.playmfl.com/players/{x}")
     df["Info"] = df["player_id"].apply(lambda x: f"https://mflplayer.info/player/{x}")
 
@@ -238,6 +238,14 @@ if not df.empty:
     df["floor_alt"] = [r.get("floor_alt", None) for r in results]
 
     st.session_state.last_id = df.iloc[-1]["listingResourceId"]
+
+    # fix all these inferred floats to be ints
+    int_columns = ["current_OVR", "best_alt_OVR", "OVR_delta", "price", "age", "floor_primary", "floor_alt"]
+    for col in int_columns:
+        if col in df.columns:
+            df[col] = df[col].fillna(0).astype(int)
+
+
 
     display_df = df[[
         "Name", "age","positions","current_OVR", "best_alt_position", "best_alt_OVR", "OVR_delta",
